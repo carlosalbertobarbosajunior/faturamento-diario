@@ -11,7 +11,17 @@ mes = hoje.month
 dia = hoje.day
 hora = hoje.hour
 minuto = hoje.minute
-
+#------------------------------INFORMACOES DO USUARIO-------------------------------------------------------------------
+pergunta = input('Digite s caso deseje enviar o faturamento para a Renata Gava e Thiago Pereira. Para digitar novos destinatários, digite qualquer outra informação.')
+if pergunta == 's':
+    emails = "renata.gava@hkm.ind.br;thiago.pereira@hkm.ind.br"
+else:
+    emails = ''
+    while True:
+        novo_email = input('Digite os logins dos destinatários (ex: carlos.junior) separados por enter. Para encerrar, pressione enter com o campo vazio.')
+        if not novo_email:
+            break
+        emails += novo_email + '@hkm.ind.br;'
 #------------------------------EXCEL-------------------------------------------------------------------
 xlapp = win32com.client.DispatchEx("Excel.Application")
 xlapp.Visible = 0
@@ -47,7 +57,7 @@ body_filtro_data = '<html><body>' + df_filtro_data.to_html() + '</body></html>'
 # -----------------------------OUTLOOK----------------------------------------------------------------
 outlook = win32com.client.Dispatch("Outlook.Application")
 Msg = outlook.CreateItem(0)
-Msg.To = "renata.gava@hkm.ind.br;thiago.pereira@hkm.ind.br"
+Msg.To = emails
 Msg.Subject = f"Faturamento Diário {dia}-{mes}-{ano}"
 Msg.HTMLBody = f'''
  Bom dia,<br><br>
