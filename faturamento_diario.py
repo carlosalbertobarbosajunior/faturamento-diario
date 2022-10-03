@@ -11,8 +11,10 @@ mes = hoje.month
 dia = hoje.day
 hora = hoje.hour
 minuto = hoje.minute
+
+inicio_mes = str(ano)+'-'+str(mes)+'-'+'01'
 #------------------------------INFORMACOES DO USUARIO-------------------------------------------------------------------
-pergunta = input('Digite s caso deseje enviar o faturamento para a Renata Gava e Thiago Pereira. Para digitar novos destinatários, digite qualquer outra informação.')
+pergunta = input('Digite s caso deseje enviar o faturamento para a Renata Gava e Thiago Pereira. Para digitar novos destinatários, digite qualquer outra informação.\n')
 if pergunta == 's':
     emails = "renata.gava@hkm.ind.br;thiago.pereira@hkm.ind.br"
 else:
@@ -22,6 +24,7 @@ else:
         if not novo_email:
             break
         emails += novo_email + '@hkm.ind.br;'
+print('Por favor, aguarde.')
 #------------------------------EXCEL-------------------------------------------------------------------
 xlapp = win32com.client.DispatchEx("Excel.Application")
 xlapp.Visible = 0
@@ -42,7 +45,7 @@ from babel.numbers import format_currency
 faturamento = pd.read_excel(
     "C:\\Users\\carlos.junior\\Desktop\\FaturamentoDiario\\Faturamento_Diario.xlsm", sheet_name="vwFaturamentoOS")
 
-filtro_data = faturamento[(faturamento['Data de Emissão da NF'] >= '2022-09-01')]
+filtro_data = faturamento[(faturamento['Data de Emissão da NF'] >= inicio_mes)]
 filtro_data = filtro_data[['OS', 'NF', 'Valor Médio da OS', 'Valor Restante a Faturar', 'Data de Emissão da NF', 'Cliente', 'Carteirista']]
 filtro_data = filtro_data.rename(columns={'Valor Médio da OS': 'Valor da OS'})
 filtro_data['NF'] = filtro_data['NF'].astype('int')
@@ -62,7 +65,7 @@ Msg.Subject = f"Faturamento Diário {dia}-{mes}-{ano}"
 Msg.HTMLBody = f'''
  Bom dia,<br><br>
  No presente momento, o faturamento do mês está em {faturamento_mensal}.<br>
- Abaixo, a lista detalhada do faturamento de setembro:<br>
+ Abaixo, a lista detalhada:<br>
  
  {body_filtro_data}
 
@@ -71,3 +74,5 @@ Msg.HTMLBody = f'''
  '''
 Msg.Attachments.Add(path_to_jpg)
 Msg.Send()
+
+fim = input('Fim do script. Pressione enter para finalizar.')
